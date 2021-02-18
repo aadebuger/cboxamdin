@@ -44,6 +44,11 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+Vue.prototype.$avinit = { value: false }
+Vue.prototype.$avhost = { value: 'http://192.168.1.2:7000' }
+Vue.prototype.$uploadhost = { value: 'http://192.168.1.2:7000/1.1/filesformminio/test.png' }
+Vue.config.newapihost = '192.168.1.2'
+
 
 new Vue({
   el: '#app',
