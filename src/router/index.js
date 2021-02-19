@@ -264,15 +264,15 @@ export const asyncRoutes = [
     redirect: '/student/list',
     name: 'Student',
     meta: {
-      title: '人员',
+      title: '成员',
       icon: 'el-icon-s-help'
     },
     children: [
       {
         path: 'create',
         component: () => import('@/views/student/newstudent'),
-        name: '新课程',
-        meta: { title: '新学员', icon: 'edit' }
+        name: '新成员',
+        meta: { title: '新成员', icon: 'edit' }
       },
       {
         path: 'edit/:id(\\d+)',
@@ -284,11 +284,12 @@ export const asyncRoutes = [
       {
         path: 'list',
         component: () => import('@/views/student/students'),
-        name: 'ArticleList',
-        meta: { title: '员工列表', icon: 'list' }
+        name: '成员列表',
+        meta: { title: '成员列表', icon: 'list' }
       }
     ]
   },
+  /*
   {
     path: '/android',
     component: Layout,
@@ -320,6 +321,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  */
   {
     path: '/box',
     component: Layout,
