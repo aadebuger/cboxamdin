@@ -248,7 +248,8 @@ export const asyncRoutes = [
       name: 'UserStudentEdit',
       meta: { title: '学生编辑', noCache: true, activeMenu: '/user/student/list' },
       hidden: true
-    },
+    }
+    /*
     {
       path: 'admin/list',
       component: () => import('@/views/user/admin/list'),
@@ -262,6 +263,46 @@ export const asyncRoutes = [
       meta: { title: '管理员编辑', noCache: true, activeMenu: '/user/admin/list' },
       hidden: true
     }
+    */
+  ]
+},
+ {
+  path: '/newlesson',
+  component: Layout,
+  name: 'LessonPage',
+  meta: {
+    title: '教学管理',
+    icon: 'el-icon-s-help'
+  },
+  children: [
+    {
+      path: 'newlesson/list',
+      component: () => import('@/views/lesson/list'),
+      name: 'UserStudentPageList',
+      meta: { title: '教学管理', noCache: true }
+    },
+    {
+      path: 'newlesson/edit',
+      component: () => import('@/views/lesson/edit'),
+      name: 'UserStudentEdit',
+      meta: { title: '学生编辑', noCache: true, activeMenu: '/newlesson/list' },
+      hidden: true
+    }
+    /*
+    {
+      path: 'admin/list',
+      component: () => import('@/views/user/admin/list'),
+      name: 'UserAdminPageList',
+      meta: { title: '管理员列表', noCache: true }
+    },
+    {
+      path: 'admin/edit',
+      component: () => import('@/views/user/admin/edit'),
+      name: 'UserAdminEdit',
+      meta: { title: '管理员编辑', noCache: true, activeMenu: '/user/admin/list' },
+      hidden: true
+    }
+    */
   ]
 },
   {
