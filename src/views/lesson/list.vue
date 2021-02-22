@@ -1,112 +1,179 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
+    <el-form :model="queryParam" ref="queryForm" :inline="true">
+      <el-form-item label="课程名：">
+        <el-input v-model="queryParam.userName"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm">查询</el-button>
+        <router-link :to="{path:'/user/student/edit'}" class="link-left">
+          <el-button type="primary">添加</el-button>
+        </router-link>
+      </el-form-item>
+    </el-form>
 
-      <el-table-column width="180px" align="center" label="Date">
-        <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column>
+    <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
+      <el-table-column prop="id" label="Id" />
+      <el-table-column         prop="name" label="课程名字" />
+      <el-table-column         prop="lm" label="时间" />
+      <el-table-column  prop="startTime"
+        label='开始时间' />
+      <el-table-column  prop="endTime"
+        label='结束时间' />
+      <el-table-column prop="members"
+        label="学员名" />
+    
 
-      <el-table-column width="120px" align="center" label="Author">
-        <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" label="Importance">
-        <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" class="meta-item__icon" />
-        </template>
-      </el-table-column>
-
-      <el-table-column class-name="status-col" label="Status" width="110">
+      <el-table-column width="270px" label="操作" align="center">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="300px" label="Title">
-        <template slot-scope="{row}">
-          <router-link :to="'/example/edit/'+row.id" class="link-type">
-            <span>{{ row.title }}</span>
+       
+          <router-link :to="{path:'/user/student/edit', query:{id:row.id}}" class="link-left">
+            <el-button size="mini" >编辑</el-button>
           </router-link>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="Actions" width="120">
-        <template slot-scope="scope">
-          <router-link :to="'/example/edit/'+scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">
-              Edit
-            </el-button>
-          </router-link>
+  
+          <el-button  size="mini" type="danger" @click="deleteUser(row)" class="link-left">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="queryParam.pageIndex" :limit.sync="queryParam.pageSize"
+                @pagination="search"/>
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-
+import { mapGetters, mapState } from 'vuex'
+import Pagination from '@/components/Pagination'
+import userApi from '@/api/user'
+import AV from 'leancloud-storage'
+import moment from 'moment'
 export default {
-  name: 'ArticleList',
   components: { Pagination },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-  data() {
+  data () {
     return {
-      list: null,
-      total: 0,
+      queryParam: {
+        userName: '',
+        role: 1,
+        pageIndex: 1,
+        pageSize: 10
+      },
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20
-      }
+      tableData: [],
+      total: 0
     }
   },
-  created() {
-    this.getList()
+  created () {
+    this.search()
   },
   methods: {
-    getList() {
+    search () {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+    console.log(`Vue.prototype.$avinit`, this.$avinit.value)
+    if (this.$avinit.value === false) {
+      var APP_ID = 'eAQGWOHouG1eTjsMkbAdlUD8-gzGzoHsz'
+      var APP_KEY = 'R7yHLgfevCPbj8axml1CN49N'
+      AV.init({
+        appId: APP_ID,
+        appKey: APP_KEY,
+        serverURLs: this.$avhost.value
+      })
+      this.$avinit.value = true
+      console.log(`Vue.prototype.$avinit`, this.$avinit)
+    }
+    var p = this
+    var query = new AV.Query('Lesson')
+    query.find().then(function (students) {
+      // students 是包含满足条件的 Student 对象的数组
+      console.log(`students=`, students)
+      
+      p.queryParam.pageIndex = 0
+      p.listLoading = false
+      p.tableData = students.map((item) => {
+        console.log(`time=`, Date.parse(item.createdAt))
+        var date1 = Date.parse(item.createdAt)
+        console.log('date1=', date1)
+        console.log("item.get('lm'=", item.get('lm'))
+        var moment1 = moment(item.get('lm'))
+        console.log('moment1', moment1)
+        console.log('moment1 format', moment1.format('YYYY-MM-DD'))
+        return {
+          name: item.get('name'),
+          lm: moment1.format('YYYY-MM-DD'),
+          startTime: item.get('startTime'),
+          endTime: item.get('endTime'),
+          address: 'home_tests',
+          id: item.id
+        }
+      })
+      p.total =  p.tableData.length
+      
+    })
+
+
+
+    },
+    search1 () {
+      this.listLoading = true
+      userApi.getUserPageList(this.queryParam).then(data => {
+        const re = data.response
+        this.tableData = re.list
+        this.total = re.total
+        this.queryParam.pageIndex = re.pageNum
         this.listLoading = false
       })
+    },
+    changeStatus (row) {
+      let _this = this
+      userApi.changeStatus(row.id).then(re => {
+        if (re.code === 1) {
+          row.status = re.response
+          _this.$message.success(re.message)
+        } else {
+          _this.$message.error(re.message)
+        }
+      })
+    },
+    deleteUser (row) {
+      let _this = this
+      userApi.deleteUser(row.id).then(re => {
+        if (re.code === 1) {
+          _this.search()
+          _this.$message.success(re.message)
+        } else {
+          _this.$message.error(re.message)
+        }
+      })
+    },
+    submitForm () {
+      this.queryParam.pageIndex = 1
+      this.search()
+    },
+    levelFormatter  (row, column, cellValue, index) {
+      return this.enumFormat(this.levelEnum, cellValue)
+    },
+    sexFormatter  (row, column, cellValue, index) {
+      return this.enumFormat(this.sexEnum, cellValue)
+    },
+    statusFormatter (status) {
+      return this.enumFormat(this.statusEnum, status)
+    },
+    statusTagFormatter (status) {
+      return this.enumFormat(this.statusTag, status)
+    },
+    statusBtnFormatter (status) {
+      return this.enumFormat(this.statusBtn, status)
     }
+  },
+  computed: {
+    ...mapGetters('enumItem', [
+      'enumFormat'
+    ]),
+    ...mapState('enumItem', {
+      sexEnum: state => state.user.sexEnum,
+      statusEnum: state => state.user.statusEnum,
+      statusTag: state => state.user.statusTag,
+      statusBtn: state => state.user.statusBtn,
+      levelEnum: state => state.user.levelEnum
+    })
   }
 }
 </script>
-
-<style scoped>
-.edit-input {
-  padding-right: 100px;
-}
-.cancel-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-}
-</style>
