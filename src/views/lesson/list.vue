@@ -137,6 +137,21 @@ export default {
     },
     deleteUser (row) {
       let _this = this
+      console.log("deleteUser row id ",row.id)
+      const todo = AV.Object.createWithoutData('Lesson', row.id);
+      todo.destroy().then( (student)=>
+      {
+        _this.search()
+           _this.$message.success(re.message)
+
+      },(error) =>
+      {
+      _this.$message.error(re.message)
+      })
+
+    },
+    deleteUser1 (row) {
+      let _this = this
       userApi.deleteUser(row.id).then(re => {
         if (re.code === 1) {
           _this.search()

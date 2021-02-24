@@ -4,7 +4,7 @@
       style="width: 100%">
       <el-table-column
         prop="boxNumber"
-        label="名字"
+        label="箱号"
         width="180">
       </el-table-column>
  <el-table-column
@@ -14,12 +14,12 @@
       </el-table-column>
       <el-table-column
         prop="name"
-        label="名字" width="200">
+        label="绑定人" width="200">
       </el-table-column>
       <el-table-column
         prop="status"
         label="状态"
-        width="180">
+        width="180" :formatter="setStatus">
       </el-table-column>
       <el-table-column
         prop="device"
@@ -38,6 +38,7 @@
 
 <script>
 import AV from 'leancloud-storage'
+      
 export default {
   data () {
     console.log('data')
@@ -64,12 +65,14 @@ export default {
         var date1 = Date.parse(item.createdAt)
         console.log('date1=', date1)
         console.log('id=', item.id)
+        console.log('status=', item.get('state'))
         return {
           boxNumber: item.get('boxNumber'),
           id: item.id,
           serial: item.get('serial'),
           model: item.get('model'),
-          device: item.get('device')
+          device: item.get('device'),
+          status: item.get('state')
         }
       })
 
@@ -90,6 +93,22 @@ export default {
     }
   },
   methods: {
+    setStatus(row, column) {
+      return this.getSatus(row.status)
+    },
+    getSatus(status){
+     switch (status) {
+        case 0:
+          return '空闲';
+        case 1:
+          return "占用";
+        case 2:
+          return "锁定";
+        default:
+          return "已撤销";
+      }
+    },
+
     handleClick: function (row) {
       var query = new AV.Query('pytest')
       query.equalTo('lastName', 'Smith')

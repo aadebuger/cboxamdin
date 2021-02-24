@@ -70,6 +70,36 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true
   },
+     {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/box/box'),
+        name: 'dashboard',
+        meta: { title: '管理台', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+
+  /*
+    {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
+        meta: { title: '管理台', icon: 'dashboard', affix: true }
+      }
+    ]
+  },
+*/
+  /*
   {
     path: '/',
     component: Layout,
@@ -83,6 +113,7 @@ export const constantRoutes = [
       }
     ]
   },
+  */
   /**
   {
     path: '/documentation',
@@ -305,6 +336,7 @@ export const asyncRoutes = [
     */
   ]
 },
+/**
   {
     path: '/lesson',
     component: Layout,
@@ -367,6 +399,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  **/
   /*
   {
     path: '/android',
@@ -465,7 +498,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'log',
-        component: () => import('@/views/error-log/alertlogs'),
+        component: () => import('@/views/error-log/list'),
         name: 'ErrorLog',
         meta: { title: '报警日志', icon: 'bug' }
       }
