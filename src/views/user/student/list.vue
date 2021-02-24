@@ -16,28 +16,43 @@
       <el-table-column prop="id" label="Id" />
       <el-table-column prop="userName" label="用户名"/>
       <el-table-column prop="realName" label="真实姓名" />
+        <el-table-column label="头像" width="100">>
+　　<template slot-scope="scope">
+　　　<img :src="scope.row.imageUrl" width="40" height="40" class="head_pic"/>
+　　</template>
+  </el-table-column>
       <el-table-column prop="userLevel" label="学级"  :formatter="levelFormatter"/>
       <el-table-column prop="sex" label="性别" width="60px;" :formatter="sexFormatter"/>
       <el-table-column prop="phone" label="手机号"/>
       <el-table-column prop="createTime" label="创建时间" width="160px"/>
+      <!--
       <el-table-column label="状态" prop="status" width="70px">
+        
         <template slot-scope="{row}">
           <el-tag :type="statusTagFormatter(row.status)">
             {{ statusFormatter(row.status) }}
           </el-tag>
         </template>
       </el-table-column>
+      -->
       <el-table-column width="270px" label="操作" align="center">
         <template slot-scope="{row}">
+          <!--
           <el-button size="mini"  @click="changeStatus(row)" class="link-left">
             {{ statusBtnFormatter(row.status) }}
+          </el-button>
+          -->
+             <el-button size="mini"  @click="handleAsyncClick(row)" class="link-left">
+             同步
           </el-button>
           <router-link :to="{path:'/user/student/edit', query:{id:row.id}}" class="link-left">
             <el-button size="mini" >编辑</el-button>
           </router-link>
+          <!--
           <router-link :to="{path:'/log/user/list', query:{userId:row.id}}" class="link-left">
             <el-button size="mini" >日志</el-button>
           </router-link>
+          -->
           <el-button  size="mini" type="danger" @click="deleteUser(row)" class="link-left">删除</el-button>
         </template>
       </el-table-column>
@@ -52,6 +67,36 @@ import { mapGetters, mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
 import userApi from '@/api/user'
 import AV from 'leancloud-storage'
+
+async function querySync(dataid)
+    {
+      var  bQueryok = 0;
+      var  msg = "同步成功"
+      for ( var i = 0; i < 10; i++) {
+    console.log(i);
+    await new Promise(resolve => setTimeout(resolve, 5000));
+     var count =i ;
+    const query = new AV.Query('Student');
+      query.get(dataid).then((todo) => {
+        console.log("todo",todo)
+        console.log("i=",count)
+        var syncing = todo.get('syncing')
+        console.log("synciing=",syncing )
+        if (syncing == 0)
+          {
+              bQueryok = 1
+              msg = todo.get("msg")
+              return todo.get("msg")
+
+          }
+      })
+         if (bQueryok ==1)
+            break;
+
+      }
+        return msg
+    }
+
 export default {
   components: { Pagination },
   data () {
@@ -71,6 +116,38 @@ export default {
     this.search()
   },
   methods: {
+    
+
+    async handleAsyncClick(row) {
+     
+       console.log('id=', row.id)
+        var p = this
+      const query = new AV.Query('Student');
+      query.get(row.id).then((todo) => {
+        console.log("todo",todo)
+        todo.set("syncing",1)
+        todo.save().then((todo) => {
+        // 成功保存之后，执行其他逻辑
+      
+        p.$message({
+          message: '发送同步请求',
+          type: 'success'
+        })
+        
+      }, (error) => {
+        // 异常处理
+        console.log('save error', error)
+      })
+
+      });
+      var msg = await querySync(row.id)
+      console.log("msg=",msg)
+       p.$message({
+          message: msg,
+          type: 'success'
+        })
+        
+    },
     search () {
       this.listLoading = true
     console.log(`Vue.prototype.$avinit`, this.$avinit.value)
@@ -98,12 +175,14 @@ export default {
         var date1 = Date.parse(item.createdAt)
         console.log('date1=', date1)
         console.log('id=', item.id)
+        console.log('userLevel', item.get('userlevel'))
         return {
           userName: item.get('name'),
    //       androidid: item.get('androidid'),
    //       photo: item.get('photo'),
    //       department: item.get('department'),
-   //       imageurl: item.get('imageurl'),
+          imageUrl: item.get('imageurl'),
+          userLevel: item.get('userlevel'),
           id: item.id
         }
       })
@@ -136,6 +215,22 @@ export default {
       })
     },
     deleteUser (row) {
+      let _this = this
+      console.log("deleteUser row id ",row.id)
+      const todo = AV.Object.createWithoutData('Student', row.id);
+      todo.destroy().then( (student)=>
+      {
+        _this.search()
+           _this.$message.success(re.message)
+
+      },(error) =>
+      {
+      _this.$message.error(re.message)
+      })
+
+    },
+
+    deleteUser1 (row) {
       let _this = this
       userApi.deleteUser(row.id).then(re => {
         if (re.code === 1) {

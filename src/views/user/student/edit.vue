@@ -5,9 +5,11 @@
       <el-form-item label="用户名："  prop="userName" required>
         <el-input v-model="form.userName"></el-input>
       </el-form-item>
+      <!--
       <el-form-item label="密码："  required>
         <el-input v-model="form.password"></el-input>
       </el-form-item>
+      -->
       <el-form-item label="真实姓名：" prop="realName" required>
         <el-input v-model="form.realName"></el-input>
       </el-form-item>
@@ -51,11 +53,13 @@
           <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
         </el-select>
       </el-form-item>
+      <!--
       <el-form-item label="状态：" required>
         <el-select v-model="form.status" placeholder="状态">
           <el-option v-for="item in statusEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
         </el-select>
       </el-form-item>
+      -->
       <el-form-item>
         <el-button type="primary" @click="submitForm">提交</el-button>
         <el-button @click="resetForm">重置</el-button>
@@ -103,6 +107,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import userApi from '@/api/user'
 import AV from 'leancloud-storage'
+var editstudent;
 export default {
   data () {
     return {
@@ -117,7 +122,7 @@ export default {
         sex: '',
         birthDay: null,
         phone: null,
-        userLevel: null,
+        userLevel: 1,
         imageUrl: '',
         deviceid: ''
       },
@@ -140,10 +145,27 @@ export default {
     let _this = this
     if (id && parseInt(id) !== 0) {
       _this.formLoading = true
+
+      const query = new AV.Query('Student')
+    var p = this
+    query.get(id).then((todo) => {
+      // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
+      console.log('Student', todo)
+      console.log('department', todo.get('department'))
+      p.form.userName = todo.get('name')
+     // p.form.deviceid = todo.get('androidid')
+      p.form.imageUrl = todo.get('imageurl')
+      p.form.userLevel = todo.get('userlevel')
+       _this.formLoading = false
+      editstudent=todo
+
+    })
+    /*
       userApi.selectUser(id).then(re => {
         _this.form = re.response
         _this.formLoading = false
       })
+      */
     }
   },
   methods: {
@@ -152,16 +174,25 @@ export default {
       let _this = this
       this.$refs.form.validate((valid) => {
         if (valid) {
-  
+            console.log("this.$route.query.id",this.$route.query.id)
+            let id = this.$route.query.id
             const Todo = AV.Object.extend('Student')
-          // 构建对象
-          const todo = new Todo()
+    
+            var todo = new Todo()
 
+             if (id && parseInt(id) !== 0)
+                {
+                    todo= editstudent
+                }
           // 为属性赋值
+          console.log('userLevel', this.form.userLevel)
           todo.set('name', this.form.userName)
+          todo.set('realname',this.form.realName)
+          
+          todo.set('userlevel', this.form.userLevel)
 //          todo.set('androidid', this.form.deviceid)
 //          todo.set('photo', this.form.photo)
-//          todo.set('imageurl', this.form.imageUrl)
+          todo.set('imageurl', this.form.imageUrl)
 //          todo.set('department', this.form.depart)
           // 将对象保存到云端
           todo.save().then((todo) => {
