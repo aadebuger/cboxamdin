@@ -67,7 +67,7 @@ import { mapGetters, mapState } from 'vuex'
 import Pagination from '@/components/Pagination'
 import userApi from '@/api/user'
 import AV from 'leancloud-storage'
-
+import moment from 'moment'
 async function querySync(dataid)
     {
       var  bQueryok = 0;
