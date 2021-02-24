@@ -37,11 +37,19 @@
     }">
   </el-time-select>
   </el-form-item>
+        <el-form-item label="年级：" prop="userLevel" required>
+        <el-select v-model="form.userLevel" placeholder="年级">
+          <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
+        </el-select>
+      </el-form-item>
+  <!--
   <el-form-item label="学员">
   <el-transfer v-model="lessonForm.members" :data="memberdata"
   :titles="['学员', '学生']"
   ></el-transfer>
   </el-form-item>
+  -->
+
   <el-form-item>
     <el-button type="primary" @click="onSubmit">提交</el-button>
   </el-form-item>

@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm">查询</el-button>
-        <router-link :to="{path:'/user/student/edit'}" class="link-left">
+        <router-link :to="{path:'/newlesson/newlesson/edit'}" class="link-left">
           <el-button type="primary">添加</el-button>
         </router-link>
       </el-form-item>
@@ -20,14 +20,16 @@
         label='开始时间' />
       <el-table-column  prop="endTime"
         label='结束时间' />
+    <!--
       <el-table-column prop="members"
         label="学员名" />
-    
+    -->
 
+      <el-table-column prop="userLevel" label="学级"  :formatter="levelFormatter"/>
       <el-table-column width="270px" label="操作" align="center">
         <template slot-scope="{row}">
        
-          <router-link :to="{path:'/user/student/edit', query:{id:row.id}}" class="link-left">
+          <router-link :to="{path:'/newlesson/newlesson/edit', query:{id:row.id}}" class="link-left">
             <el-button size="mini" >编辑</el-button>
           </router-link>
   
@@ -101,6 +103,7 @@ export default {
           startTime: item.get('startTime'),
           endTime: item.get('endTime'),
           address: 'home_tests',
+          userLevel: item.get("userlevel"),
           id: item.id
         }
       })
