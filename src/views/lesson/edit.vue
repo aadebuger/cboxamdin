@@ -1,57 +1,40 @@
 <template>
   <div class="app-container">
-
-    <el-form :model="form" ref="form" label-width="100px" v-loading="formLoading" :rules="rules">
-      <el-form-item label="课程名："  prop="name" required>
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-  
-   <el-form-item label="课程日期" prop="lm">
-<el-date-picker
-      v-model="form.lm"
-      type="date"
-      placeholder="选择日期">
-    </el-date-picker>
-  </el-form-item>
-  <el-form-item label="时间">
-<el-time-select
-    placeholder="起始时间"
-    v-model="form.startTime"
-    :picker-options="{
-      start: '08:30',
-      step: '00:15',
-      end: '18:30'
-    }">
-  </el-time-select>
-  <el-time-select
-    placeholder="结束时间"
-    v-model="form.endTime"
-    :picker-options="{
-      start: '08:30',
-      step: '00:15',
-      end: '18:30',
-      minTime: form.startTime
-    }">
-  </el-time-select>
-</el-form-item>
-
-   
-      <el-form-item label="年级：" prop="userLevel" required>
-        <el-select v-model="form.userLevel" placeholder="年级">
-          <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
-        </el-select>
-      </el-form-item>
-      <!--
-      <el-form-item label="状态：" required>
-        <el-select v-model="form.status" placeholder="状态">
-          <el-option v-for="item in statusEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
-        </el-select>
-      </el-form-item>
-      -->
-      <el-form-item>
-        <el-button type="primary" @click="submitForm">提交</el-button>
-        <el-button @click="resetForm">重置</el-button>
-      </el-form-item>
+    <h1 class="text-center">新增课程</h1>
+    <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px" :rules="rules">
+      <el-row type="flex" class="row-bg" justify="space-between">
+        <el-col :span="12" :offset="6" style="padding-top: 20px;">
+          <el-form-item label="课程名" prop="name" required>
+            <el-input v-model="form.name" placeholder="请输入课程名称" />
+          </el-form-item>
+          <el-row type="flex" class="row-bg" justify="space-between">
+            <el-form-item label="上课日期" prop="lm">
+              <el-date-picker v-model="form.date" type="date" placeholder="选择日期" />
+            </el-form-item>
+            <el-form-item label="时间">
+              <el-time-picker
+                v-model="form.time"
+                is-range
+                range-separator="至"
+                start-placeholder="开始时间"
+                end-placeholder="结束时间"
+                placeholder="选择时间范围"
+              />
+            </el-form-item>
+          </el-row>
+          <el-form-item label="班级：" prop="userLevel" required>
+            <el-select v-model="form.userLevel" placeholder="班级">
+              <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-row type="flex" class="row-bg" justify="end">
+              <el-button @click="resetForm">重置</el-button>
+              <el-button type="primary" @click="submitForm">提交</el-button>
+            </el-row>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 </template>
@@ -95,9 +78,10 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import userApi from '@/api/user'
 import AV from 'leancloud-storage'
-var editstudent;
+
+var editstudent
 export default {
-  data () {
+  data() {
     return {
       form: {
         id: null,
@@ -113,8 +97,10 @@ export default {
         userLevel: 1,
         imageUrl: '',
         startTime: '09:00',
-      endTime: '11:00',
-        deviceid: ''
+        endTime: '11:00',
+        deviceid: '',
+        date: new Date(),
+        time: [new Date(2000, 1, 1, 9, 0, 0), new Date(2000, 1, 1, 11, 59, 59)]
       },
       formLoading: false,
       rules: {
@@ -130,57 +116,54 @@ export default {
       }
     }
   },
-  created () {
-    let id = this.$route.query.id
-    let _this = this
+  created() {
+    const id = this.$route.query.id
+    const _this = this
     if (id && parseInt(id) !== 0) {
       _this.formLoading = true
 
       const query = new AV.Query('Lesson')
-    var p = this
-    query.get(id).then((todo) => {
-      // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
-      console.log('Student', todo)
-      console.log('department', todo.get('department'))
-      p.form.name = todo.get('name')
-      p.form.lm =todo.get('lm')
-      p.form.startTime=todo.get('startTime')
-      p.form.endTime=todo.get('endTime')
-      p.form.userLevel = todo.get("userlevel")
-       _this.formLoading = false
-      editstudent=todo
-
-    })
-    /*
-      userApi.selectUser(id).then(re => {
-        _this.form = re.response
+      var p = this
+      query.get(id).then((todo) => {
+        // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
+        console.log('Student', todo)
+        console.log('department', todo.get('department'))
+        p.form.name = todo.get('name')
+        p.form.lm = todo.get('lm')
+        p.form.startTime = todo.get('startTime')
+        p.form.endTime = todo.get('endTime')
+        p.form.userLevel = todo.get('userlevel')
         _this.formLoading = false
+        editstudent = todo
       })
-      */
+      /*
+        userApi.selectUser(id).then(re => {
+          _this.form = re.response
+          _this.formLoading = false
+        })
+        */
     }
   },
   methods: {
-    submitForm ()
-    {
-      let _this = this
+    submitForm() {
+      const _this = this
       this.$refs.form.validate((valid) => {
         if (valid) {
-            console.log("this.$route.query.id",this.$route.query.id)
-            let id = this.$route.query.id
-            const Todo = AV.Object.extend('Lesson')
-    
-            var todo = new Todo()
+          console.log('this.$route.query.id', this.$route.query.id)
+          const id = this.$route.query.id
+          const Todo = AV.Object.extend('Lesson')
 
-             if (id && parseInt(id) !== 0)
-                {
-                    todo= editstudent
-                }
+          var todo = new Todo()
+
+          if (id && parseInt(id) !== 0) {
+            todo = editstudent
+          }
           // 为属性赋值
-      todo.set('name', this.form.name)
-      todo.set('userlevel', this.form.userLevel)
-      todo.set('lm', this.form.lm)
-      todo.set('startTime', this.form.startTime)
-      todo.set('endTime', this.form.endTime)
+          todo.set('name', this.form.name)
+          todo.set('userlevel', this.form.userLevel)
+          todo.set('lm', this.form.lm)
+          todo.set('startTime', this.form.startTime)
+          todo.set('endTime', this.form.endTime)
 
           todo.save().then((todo) => {
             // 成功保存之后，执行其他逻辑
@@ -189,10 +172,9 @@ export default {
               message: '成功',
               type: 'success'
             })
-              _this.delCurrentView(_this).then(() => {
+            _this.delCurrentView(_this).then(() => {
               _this.$router.push('/newlesson/newlesson/list')
-              })
-
+            })
           }, (error) => {
             // 异常处理
             _this.formLoading = false
@@ -205,8 +187,8 @@ export default {
         }
       })
     },
-    submitForm1 () {
-      let _this = this
+    submitForm1() {
+      const _this = this
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.formLoading = true
@@ -228,8 +210,8 @@ export default {
         }
       })
     },
-    resetForm () {
-      let lastId = this.form.id
+    resetForm() {
+      const lastId = this.form.id
       this.$refs['form'].resetFields()
       this.form = {
         id: null,
@@ -244,8 +226,8 @@ export default {
         phone: null,
         userLevel: null,
         startTime: '09:00',
-      endTime: '11:00',
-      lm: ''
+        endTime: '11:00',
+        lm: ''
       }
       this.form.id = lastId
     },
