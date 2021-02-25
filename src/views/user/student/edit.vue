@@ -53,6 +53,10 @@
           <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value"></el-option>
         </el-select>
       </el-form-item>
+           <el-form-item label="箱号：">
+        <el-input v-model="form.boxNumber"></el-input>
+      </el-form-item>
+
       <!--
       <el-form-item label="状态：" required>
         <el-select v-model="form.status" placeholder="状态">
@@ -124,7 +128,8 @@ export default {
         phone: null,
         userLevel: 1,
         imageUrl: '',
-        deviceid: ''
+        deviceid: '',
+        boxNumber: 1
       },
       formLoading: false,
       rules: {
@@ -156,6 +161,7 @@ export default {
      // p.form.deviceid = todo.get('androidid')
       p.form.imageUrl = todo.get('imageurl')
       p.form.userLevel = todo.get('userlevel')
+      p.form.boxNumber= to.get('boxNumber')
        _this.formLoading = false
       editstudent=todo
 
@@ -193,6 +199,7 @@ export default {
 //          todo.set('androidid', this.form.deviceid)
 //          todo.set('photo', this.form.photo)
           todo.set('imageurl', this.form.imageUrl)
+          todo.set('boxNumber',this.form.boxNumber)
 //          todo.set('department', this.form.depart)
           // 将对象保存到云端
           todo.save().then((todo) => {
