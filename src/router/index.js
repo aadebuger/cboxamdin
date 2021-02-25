@@ -432,7 +432,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  */
+  
   {
     path: '/box',
     component: Layout,
@@ -452,6 +452,7 @@ export const asyncRoutes = [
       }
     ]
   },
+  */
   /**
   {
     path: '/tab',
