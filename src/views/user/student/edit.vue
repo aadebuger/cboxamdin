@@ -2,9 +2,9 @@
   <div class="app-container">
     <h1 class="text-center">新增学员</h1>
     <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px" :rules="rules">
-      <el-col :span="12" :offset="6" style="padding-top: 20px;">
+      <el-col :span="15" :offset="5" style="padding-top: 20px;">
         <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="15">
+          <el-col :span="12">
             <el-form-item label="用户名：" prop="userName" hidden>
               <el-input v-model="form.userName" />
             </el-form-item>
@@ -13,17 +13,17 @@
               <el-input v-model="form.password"></el-input>
             </el-form-item>
             -->
-            <el-form-item label="姓名：" prop="realName" placeholder="请输入真实姓名" required>
-              <el-input v-model="form.realName" />
+            <el-form-item label="姓名：" prop="realName" required>
+              <el-input v-model="form.realName" placeholder="请输入真实姓名" />
             </el-form-item>
             <el-form-item label="手机号码：" required>
               <el-input v-model="form.phone" type="text" placeholder="请输入手机号" maxlength="11" show-word-limit />
             </el-form-item>
-            <el-form-item label="身份证号码：" prop="idcard" placeholder="请输入证件号码" maxlength="18">
-              <el-input v-model="form.idcard" />
+            <el-form-item label="身份证号码：" prop="idcard">
+              <el-input v-model="form.idcard" placeholder="请输入证件号码" maxlength="18" />
             </el-form-item>
-            <el-form-item label="士兵证号码：" prop="idcard" placeholder="请输入证件号码" maxlength="7">
-              <el-input v-model="form.soldier" />
+            <el-form-item label="士兵证号码：" prop="idcard">
+              <el-input v-model="form.soldier" placeholder="请输入证件号码" maxlength="7" />
             </el-form-item>
 
             <el-form-item label="班级：" prop="userLevel" required>
@@ -31,7 +31,7 @@
                 <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value" />
               </el-select>
             </el-form-item>
-            <el-col :span="10">
+            <el-col :span="16">
               <el-form-item label="箱号：">
                 <el-input v-model="form.boxNumber" type="text" placeholder="请输入箱号" maxlength="2" show-word-limit />
               </el-form-item>

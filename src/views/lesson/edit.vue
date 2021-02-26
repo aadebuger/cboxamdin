@@ -3,7 +3,7 @@
     <h1 class="text-center">新增课程</h1>
     <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px" :rules="rules">
       <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="12" :offset="6" style="padding-top: 20px;">
+        <el-col :span="18" :offset="2" style="padding-top: 20px;">
           <el-form-item label="课程名" prop="name" required>
             <el-input v-model="form.name" placeholder="请输入课程名称" />
           </el-form-item>
