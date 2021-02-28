@@ -1,17 +1,17 @@
 module.exports = {
-  title: 'Vue Element Admin',
+  title: '手机柜管理系统',
 
   /**
    * @type {boolean} true | false
    * @description Whether show the settings right-panel
    */
-  showSettings: true,
+  showSettings: false,
 
   /**
    * @type {boolean} true | false
    * @description Whether need tagsView
    */
-  tagsView: true,
+  tagsView: false,
 
   /**
    * @type {boolean} true | false
@@ -30,7 +30,7 @@ module.exports = {
    * @description Whether support pinyin search in headerSearch
    * Bundle size minified 47.3kb,minified + gzipped 63kb
    */
-  supportPinyinSearch: true,
+  supportPinyinSearch: false,
 
   /**
    * @type {string | array} 'production' | ['production', 'development']
