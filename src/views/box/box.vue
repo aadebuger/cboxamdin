@@ -131,7 +131,7 @@ export default {
         // 成功保存之后，执行其他逻辑
       
         p.$message({
-          message: '同步请求成功',
+          message: '打开请求成功',
           type: 'success'
         })
       }, (error) => {

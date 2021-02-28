@@ -13,7 +13,9 @@
     </el-form>
 
     <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
+     <!--
       <el-table-column prop="id" label="Id" />
+      -->
       <el-table-column prop="name" label="课程名字" />
       <el-table-column prop="lm" label="时间" />
       <el-table-column prop="startTime" label="开始时间" />

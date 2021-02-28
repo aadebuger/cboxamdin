@@ -23,7 +23,9 @@
     </el-form>
 
     <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
+     <!--
       <el-table-column prop="id" label="Id" />
+     -->
       <el-table-column prop="userName" label="用户名" />
       <el-table-column prop="realName" label="真实姓名" />
       <el-table-column label="头像" width="100">
