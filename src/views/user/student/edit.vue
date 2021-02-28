@@ -163,6 +163,18 @@ export default {
     })
   },
   created() {
+      console.log(`Vue.prototype.$avinit`, this.$avinit.value)
+      if (this.$avinit.value === false) {
+        var APP_ID = 'eAQGWOHouG1eTjsMkbAdlUD8-gzGzoHsz'
+        var APP_KEY = 'R7yHLgfevCPbj8axml1CN49N'
+        AV.init({
+          appId: APP_ID,
+          appKey: APP_KEY,
+          serverURLs: this.$avhost.value
+        })
+        this.$avinit.value = true
+        console.log(`Vue.prototype.$avinit`, this.$avinit)
+      }
     const id = this.$route.query.id
     const _this = this
     if (id && parseInt(id) !== 0) {
