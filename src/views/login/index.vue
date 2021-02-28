@@ -6,7 +6,7 @@
         <h3 class="title">
           {{ $t('login.title') }}
         </h3>
-        <!--        <lang-select class="set-language" />-->
+        <!--        <lang-select group="set-language" />-->
       </div>
 
       <el-form-item prop="username">
@@ -53,18 +53,18 @@
       </el-button>
 
       <!--      <div style="position:relative">
-        <div class="tips">
+        <div group="tips">
           <span>{{ $t('login.username') }} : admin</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
-        <div class="tips">
+        <div group="tips">
           <span style="margin-right:18px;">
             {{ $t('login.username') }} : editor
           </span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
 
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
+        <el-button group="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
         </el-button>
       </div>-->

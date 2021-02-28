@@ -116,6 +116,17 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('enumItem', [
+      'enumFormat'
+    ]),
+    ...mapState('enumItem', {
+      sexEnum: state => state.user.sexEnum,
+      roleEnum: state => state.user.roleEnum,
+      statusEnum: state => state.user.statusEnum,
+      levelEnum: state => state.user.levelEnum
+    })
+  },
   created() {
     const id = this.$route.query.id
     const _this = this
@@ -173,7 +184,7 @@ export default {
               type: 'success'
             })
             _this.delCurrentView(_this).then(() => {
-              _this.$router.push('/newlesson/newlesson/list')
+              _this.$router.push('/lession/list')
             })
           }, (error) => {
             // 异常处理
@@ -268,17 +279,6 @@ export default {
       return isJPG && isLt2M
     },
     ...mapActions('tagsView', { delCurrentView: 'delCurrentView' })
-  },
-  computed: {
-    ...mapGetters('enumItem', [
-      'enumFormat'
-    ]),
-    ...mapState('enumItem', {
-      sexEnum: state => state.user.sexEnum,
-      roleEnum: state => state.user.roleEnum,
-      statusEnum: state => state.user.statusEnum,
-      levelEnum: state => state.user.levelEnum
-    })
   }
 }
 </script>

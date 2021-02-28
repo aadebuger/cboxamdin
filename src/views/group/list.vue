@@ -1,28 +1,28 @@
 <template>
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParam" :inline="true">
-      <el-form-item label="用户名：">
-        <el-input v-model="queryParam.userName" />
+      <el-form-item label="名称：">
+        <el-input v-model="queryParam.name" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm">查询</el-button>
-        <router-link :to="{path:'/user/student/edit'}" class="link-left">
-          <el-button type="primary">导出</el-button>
+        <router-link :to="{path:'/group/edit'}" class="link-left">
+          <el-button type="primary">添加</el-button>
         </router-link>
       </el-form-item>
     </el-form>
 
     <el-table v-loading="listLoading" :data="tableData" border fit highlight-current-row style="width: 100%">
-      <el-table-column prop="id" label="Id" />
-      <el-table-column prop="userName" label="用户名" />
-      <el-table-column prop="lessonname" label="课程" />
-      <el-table-column prop="status" label="报警内容" />
-
-      <el-table-column prop="createTime" label="报警时间" width="160px" />
-
-      <!--      <el-table-column width="270px" label="操作" align="center">
-        <template slot-scope="{row}" />
-      </el-table-column>-->
+      <el-table-column prop="id" label="序号" />
+      <el-table-column prop="name" label="班级" />
+      <el-table-column width="270px" label="操作" align="center">
+        <template slot-scope="{row}">
+          <router-link :to="{path:'/group/edit', query:{id:row.id}}" class="link-left">
+            <el-button size="mini">编辑</el-button>
+          </router-link>
+          <el-button size="mini" type="danger" class="link-left" @click="deleteUser(row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
@@ -40,29 +40,6 @@ import Pagination from '@/components/Pagination'
 import userApi from '@/api/user'
 import AV from 'leancloud-storage'
 import moment from 'moment'
-async function querySync(dataid) {
-  var bQueryok = 0
-  var msg = '同步成功'
-  for (var i = 0; i < 10; i++) {
-    console.log(i)
-    await new Promise(resolve => setTimeout(resolve, 5000))
-    var count = i
-    const query = new AV.Query('Student')
-    query.get(dataid).then((todo) => {
-      console.log('todo', todo)
-      console.log('i=', count)
-      var syncing = todo.get('syncing')
-      console.log('synciing=', syncing)
-      if (syncing === 0) {
-        bQueryok = 1
-        msg = todo.get('msg')
-        return todo.get('msg')
-      }
-    })
-    if (bQueryok === 1) { break }
-  }
-  return msg
-}
 
 export default {
   components: { Pagination },
@@ -95,33 +72,6 @@ export default {
     this.search()
   },
   methods: {
-
-    async handleAsyncClick(row) {
-      console.log('id=', row.id)
-      var p = this
-      const query = new AV.Query('Student')
-      query.get(row.id).then((todo) => {
-        console.log('todo', todo)
-        todo.set('syncing', 1)
-        todo.save().then((todo) => {
-        // 成功保存之后，执行其他逻辑
-
-          p.$message({
-            message: '发送同步请求',
-            type: 'success'
-          })
-        }, (error) => {
-        // 异常处理
-          console.log('save error', error)
-        })
-      })
-      var msg = await querySync(row.id)
-      console.log('msg=', msg)
-      p.$message({
-        message: msg,
-        type: 'success'
-      })
-    },
     search() {
       this.listLoading = true
       console.log(`Vue.prototype.$avinit`, this.$avinit.value)
@@ -137,31 +87,29 @@ export default {
         console.log(`Vue.prototype.$avinit`, this.$avinit)
       }
       var p = this
-      var query = new AV.Query('Alert')
+      var query = new AV.Query('Lesson')
       query.find().then(function(students) {
-      // students 是包含满足条件的 Student 对象的数组
+        // students 是包含满足条件的 Student 对象的数组
         console.log(`students=`, students)
 
         p.queryParam.pageIndex = 0
         p.listLoading = false
         p.tableData = students.map((item) => {
           console.log(`time=`, Date.parse(item.createdAt))
-          console.log(`time=`, Date.parse(item.createdAt))
+          var date1 = Date.parse(item.createdAt)
+          console.log('date1=', date1)
+          console.log("item.get('lm'=", item.get('lm'))
           var moment1 = moment(item.get('lm'))
           console.log('moment1', moment1)
           console.log('moment1 format', moment1.format('YYYY-MM-DD'))
-
-          var ms1 = Date.parse(item.createdAt)
-          console.log('id=', item.id)
-          console.log('status=', item.get('status'))
-
           return {
-            userName: item.get('student'),
-
-            lessonname: item.get('lession'),
-            status: item.get('status'),
-            id: item.id,
-            createTime: moment(ms1).format('YYYY-MM-DD')
+            name: item.get('name'),
+            lm: moment1.format('YYYY-MM-DD'),
+            startTime: item.get('startTime'),
+            endTime: item.get('endTime'),
+            address: 'home_tests',
+            userLevel: item.get('userlevel'),
+            id: item.id
           }
         })
         p.total = p.tableData.length
@@ -191,7 +139,7 @@ export default {
     deleteUser(row) {
       const _this = this
       console.log('deleteUser row id ', row.id)
-      const todo = AV.Object.createWithoutData('Student', row.id)
+      const todo = AV.Object.createWithoutData('Group', row.id)
       todo.destroy().then(re => {
         if (re.code === 1) {
           _this.search()
@@ -201,7 +149,6 @@ export default {
         }
       })
     },
-
     deleteUser1(row) {
       const _this = this
       userApi.deleteUser(row.id).then(re => {

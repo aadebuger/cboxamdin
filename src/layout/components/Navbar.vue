@@ -6,7 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <!--        <search id="header-search" class="right-menu-item" />-->
+        <!--        <search id="header-search" group="right-menu-item" />-->
 
         <error-log class="errLog-container right-menu-item hover-effect" />
 
@@ -16,7 +16,7 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
 
-        <!--        <lang-select class="right-menu-item hover-effect" />-->
+        <!--        <lang-select group="right-menu-item hover-effect" />-->
 
       </template>
 

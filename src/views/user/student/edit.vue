@@ -2,7 +2,7 @@
   <div class="app-container">
     <h1 class="text-center">新增学员</h1>
     <el-form ref="form" v-loading="formLoading" :model="form" label-width="100px" :rules="rules">
-      <el-col :span="15" :offset="5" style="padding-top: 20px;">
+      <el-col :span="15" :offset="4" style="padding-top: 20px;">
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="12">
             <el-form-item label="用户名：" prop="userName" hidden>
@@ -26,8 +26,8 @@
               <el-input v-model="form.soldier" placeholder="请输入证件号码" maxlength="7" />
             </el-form-item>
 
-            <el-form-item label="班级：" prop="userLevel" required>
-              <el-select v-model="form.userLevel" placeholder="班级">
+            <el-form-item label="班级：" prop="group" required>
+              <el-select v-model="form.group" placeholder="班级">
                 <el-option v-for="item in levelEnum" :key="item.key" :value="item.key" :label="item.value" />
               </el-select>
             </el-form-item>
@@ -115,7 +115,6 @@
 </style>
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
-import userApi from '@/api/user'
 import AV from 'leancloud-storage'
 
 var editstudent
@@ -133,7 +132,7 @@ export default {
         sex: '',
         birthDay: null,
         phone: null,
-        userLevel: 1,
+        group: 1,
         imageUrl: '',
         deviceid: '',
         boxNumber: 1
@@ -146,11 +145,22 @@ export default {
         realName: [
           { required: true, message: '请输入真实姓名', trigger: 'blur' }
         ],
-        userLevel: [
+        group: [
           { required: true, message: '请选择班级', trigger: 'change' }
         ]
       }
     }
+  },
+  computed: {
+    ...mapGetters('enumItem', [
+      'enumFormat'
+    ]),
+    ...mapState('enumItem', {
+      sexEnum: state => state.user.sexEnum,
+      roleEnum: state => state.user.roleEnum,
+      statusEnum: state => state.user.statusEnum,
+      levelEnum: state => state.user.levelEnum
+    })
   },
   created() {
     const id = this.$route.query.id
@@ -167,17 +177,11 @@ export default {
         p.form.userName = todo.get('name')
         // p.form.deviceid = todo.get('androidid')
         p.form.imageUrl = todo.get('imageurl')
-        p.form.userLevel = todo.get('userlevel')
+        p.form.group = todo.get('group')
         p.form.boxNumber = todo.get('boxNumber')
         _this.formLoading = false
         editstudent = todo
       })
-      /*
-        userApi.selectUser(id).then(re => {
-          _this.form = re.response
-          _this.formLoading = false
-        })
-        */
     }
   },
   methods: {
@@ -217,11 +221,9 @@ export default {
             todo = editstudent
           }
           // 为属性赋值
-          console.log('userLevel', this.form.userLevel)
           todo.set('name', this.form.userName)
           todo.set('realname', this.form.realName)
-
-          todo.set('userlevel', this.form.userLevel)
+          todo.set('group', this.form.group)
           //          todo.set('androidid', this.form.deviceid)
           //          todo.set('photo', this.form.photo)
           todo.set('imageurl', this.form.imageUrl)
@@ -250,29 +252,6 @@ export default {
         }
       })
     },
-    submitForm1() {
-      const _this = this
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.formLoading = true
-          userApi.createUser(this.form).then(data => {
-            if (data.code === 1) {
-              _this.$message.success(data.message)
-              _this.delCurrentView(_this).then(() => {
-                _this.$router.push('/user/student/list')
-              })
-            } else {
-              _this.$message.error(data.message)
-              _this.formLoading = false
-            }
-          }).catch(e => {
-            _this.formLoading = false
-          })
-        } else {
-          return false
-        }
-      })
-    },
     resetForm() {
       const lastId = this.form.id
       this.$refs['form'].resetFields()
@@ -287,7 +266,7 @@ export default {
         sex: '',
         birthDay: null,
         phone: null,
-        userLevel: null,
+        group: null,
         imageUrl: '',
         deviceid: ''
       }
@@ -330,17 +309,6 @@ export default {
       return isJPG && isLt2M
     },
     ...mapActions('tagsView', { delCurrentView: 'delCurrentView' })
-  },
-  computed: {
-    ...mapGetters('enumItem', [
-      'enumFormat'
-    ]),
-    ...mapState('enumItem', {
-      sexEnum: state => state.user.sexEnum,
-      roleEnum: state => state.user.roleEnum,
-      statusEnum: state => state.user.statusEnum,
-      levelEnum: state => state.user.levelEnum
-    })
   }
 }
 </script>

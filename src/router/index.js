@@ -78,8 +78,34 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/group',
+    component: Layout,
+    redirect: '/group/list',
+    name: 'ClassPage',
+    meta: {
+      title: '班级管理',
+      icon: 'peoples'
+    },
+    children: [
+      {
+        path: '/group/list',
+        component: () => import('@/views/group/list'),
+        name: 'UserStudentPageList',
+        meta: { title: '班级列表', noCache: true }
+      },
+      {
+        path: '/group/edit',
+        component: () => import('@/views/group/edit'),
+        name: 'ClassEdit',
+        meta: { title: '班级编辑', noCache: true, activeMenu: '/group/list' },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
+    redirect: '/user/student/list',
     name: 'UserPage',
     meta: {
       title: '用户管理',
@@ -102,25 +128,26 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/newlesson',
+    path: '/edu',
     component: Layout,
-    name: 'LessonPage',
+    redirect: '/edu/lession/list',
+    name: 'LessionPage',
     meta: {
       title: '教学管理',
       icon: 'el-icon-s-help'
     },
     children: [
       {
-        path: 'newlesson/list',
-        component: () => import('@/views/lesson/list'),
+        path: '/edu/lession/list',
+        component: () => import('@/views/lession/list'),
         name: 'UserStudentPageList',
         meta: { title: '课程列表', noCache: true }
       },
       {
-        path: 'newlesson/edit',
-        component: () => import('@/views/lesson/edit'),
+        path: '/edu/lession/edit',
+        component: () => import('@/views/lession/edit'),
         name: 'UserStudentEdit',
-        meta: { title: '课程设置', noCache: true, activeMenu: '/newlesson/list' },
+        meta: { title: '课程设置', noCache: true, activeMenu: '/edu/lession/list' },
         hidden: true
       }
     ]

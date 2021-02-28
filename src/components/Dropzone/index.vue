@@ -100,9 +100,9 @@ export default {
       addRemoveLinks: this.showRemoveLink,
       acceptedFiles: this.acceptedFiles,
       autoProcessQueue: this.autoProcessQueue,
-      dictDefaultMessage: '<i style="margin-top: 3em;display: inline-block" class="material-icons">' + this.defaultMsg + '</i><br>Drop files here to upload',
+      dictDefaultMessage: '<i style="margin-top: 3em;display: inline-block" group="material-icons">' + this.defaultMsg + '</i><br>Drop files here to upload',
       dictMaxFilesExceeded: '只能一个图',
-      previewTemplate: '<div class="dz-preview dz-file-preview">  <div class="dz-image" style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" ><img style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" data-dz-thumbnail /></div>  <div class="dz-details"><div class="dz-size"><span data-dz-size></span></div> <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>  <div class="dz-error-message"><span data-dz-errormessage></span></div>  <div class="dz-success-mark"> <i class="material-icons">done</i> </div>  <div class="dz-error-mark"><i class="material-icons">error</i></div></div>',
+      previewTemplate: '<div group="dz-preview dz-file-preview">  <div group="dz-image" style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" ><img style="width:' + this.thumbnailWidth + 'px;height:' + this.thumbnailHeight + 'px" data-dz-thumbnail /></div>  <div group="dz-details"><div group="dz-size"><span data-dz-size></span></div> <div group="dz-progress"><span group="dz-upload" data-dz-uploadprogress></span></div>  <div group="dz-error-message"><span data-dz-errormessage></span></div>  <div group="dz-success-mark"> <i group="material-icons">done</i> </div>  <div group="dz-error-mark"><i group="material-icons">error</i></div></div>',
       init() {
         const val = vm.defaultImg
         if (!val) return

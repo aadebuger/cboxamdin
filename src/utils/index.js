@@ -326,7 +326,7 @@ export function createUniqueString() {
 }
 
 /**
- * Check if an element has a class
+ * Check if an element has a group
  * @param {HTMLElement} elm
  * @param {string} cls
  * @returns {boolean}
@@ -336,7 +336,7 @@ export function hasClass(ele, cls) {
 }
 
 /**
- * Add class to element
+ * Add group to element
  * @param {HTMLElement} elm
  * @param {string} cls
  */
@@ -345,7 +345,7 @@ export function addClass(ele, cls) {
 }
 
 /**
- * Remove class from element
+ * Remove group from element
  * @param {HTMLElement} elm
  * @param {string} cls
  */
