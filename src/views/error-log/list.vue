@@ -22,7 +22,7 @@
 
       <!--      <el-table-column width="270px" label="操作" align="center">
         <template slot-scope="{row}" />
-      </el-table-column>-->
+      </el-table-column> -->
     </el-table>
     <pagination
       v-show="total>0"
