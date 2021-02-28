@@ -9,7 +9,7 @@
           </el-form-item>
           <el-row type="flex" class="row-bg" justify="space-between">
             <el-form-item label="上课日期" prop="lm">
-              <el-date-picker v-model="form.date" type="date" placeholder="选择日期" />
+              <el-date-picker v-model="form.date" type="dates" placeholder="选择日期" />
             </el-form-item>
             <el-form-item label="时间">
               <el-time-picker
@@ -98,9 +98,7 @@ export default {
         imageUrl: '',
         startTime: '09:00',
         endTime: '11:00',
-        deviceid: '',
-        date: new Date(),
-        time: [new Date(2000, 1, 1, 9, 0, 0), new Date(2000, 1, 1, 11, 59, 59)]
+        deviceid: ''
       },
       formLoading: false,
       rules: {
