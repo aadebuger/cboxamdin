@@ -51,7 +51,30 @@ export default {
     this.search()
   },
   methods: {
-     handlerunClick: function (row) {
+      handlerunClick1: function (row) {
+  console.log('id=', row.id)
+        var p = this
+      const query = new AV.Query('Facebox');
+      query.get(row.id).then((todo) => {
+        console.log("todo",todo)
+        todo.set("task",24)
+        todo.set("boxNumber",row.boxNumber)
+        todo.save().then((todo) => {
+        // 成功保存之后，执行其他逻辑
+      
+        p.$message({
+          message: '打开请求成功',
+          type: 'success'
+        })
+      }, (error) => {
+        // 异常处理
+        console.log('save error', error)
+      })
+
+      });
+
+    },
+     handlerunClick1: function (row) {
   console.log('id=', row.id)
         var p = this
       const query = new AV.Query('Box');
