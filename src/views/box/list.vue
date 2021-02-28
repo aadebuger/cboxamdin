@@ -51,11 +51,10 @@ export default {
     this.search()
   },
   methods: {
-      handlerunClick1: function (row) {
+      handlerunClick: function (row) {
   console.log('id=', row.id)
         var p = this
-      const query = new AV.Query('Facebox');
-      query.get(row.id).then((todo) => {
+       const todo = AV.Object.createWithoutData('Facebbook', row.id);
         console.log("todo",todo)
         todo.set("task",24)
         todo.set("boxNumber",row.boxNumber)
@@ -71,7 +70,7 @@ export default {
         console.log('save error', error)
       })
 
-      });
+
 
     },
      handlerunClick1: function (row) {
